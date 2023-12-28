@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+.react-grid-item {
+  background-color: lightgray;
+  border: 1px solid black;
+}
+
+/* .react-draggable-transparent-selection {
+  user-select: none;
+}
+
+.react-grid-placeholder {
+  z-index: -1;
+} */
