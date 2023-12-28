@@ -25,7 +25,7 @@ const Home = () => {
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <Typography variant="h6" noWrap component="div">
-            Drag & Drop with <Typography >aaa</Typography>@mui/x-charts and react-grid-layout
+            Drag & Drop with @mui/x-charts and react-grid-layout
           </Typography>
         </Toolbar>
       </AppBar>
