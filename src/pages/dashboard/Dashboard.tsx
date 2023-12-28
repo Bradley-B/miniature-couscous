@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { WidthProvider, Responsive } from "react-grid-layout";
+import TimeseriesChart from "../../components/TimeseriesChart";
 // import _ from "lodash";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -27,7 +28,10 @@ const defaultItems: Item[] = [0, 1, 2, 3, 4].map((value, index, array) => ({
 const createElement = (item: Item, onRemoveItem: () => void) => {
     return (
         <div key={item.i} data-grid={item}>
-            <span className="text">{item.i}</span>
+            { item.i === '1'
+                ? <TimeseriesChart />
+                : <span className="text">{item.i}</span>
+            }
         </div>
     );
 }
@@ -45,8 +49,8 @@ export const Dashboard = (props: Props) => {
         <div>
             <button onClick={onAddItem}>Add Item</button>
             <ResponsiveReactGridLayout
-                onLayoutChange={onLayoutChange}
-                onBreakpointChange={onBreakpointChange}
+                // onLayoutChange={onLayoutChange}
+                // onBreakpointChange={onBreakpointChange}
             //   {...this.props}
             >
                 {items.map(i => createElement(i, onRemoveItem))}
