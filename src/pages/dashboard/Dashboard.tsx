@@ -3,6 +3,7 @@ import { WidthProvider, Responsive } from "react-grid-layout";
 import { Card, CardContent, CardActions, CardHeader, IconButton } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TimeseriesChart from "../../components/TimeseriesChart";
+import { DashboardComponent, dashboards } from "../../data/dashboards";
 // import _ from "lodash";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -19,32 +20,43 @@ type Item = {
     h: number,
     minW?: number,
     minH?: number,
+    component: DashboardComponent,
 }
 
-const defaultItems: Item[] = [0, 1, 2, 3, 4].map((value, index, array) => ({
-    i: value.toString(),
-    x: value * 3,
+const defaultItems: Item[] = dashboards[0].components.map((value, index, array) => ({
+    i: value.id.toString(),
+    x: value.id * 3,
     y: 0,
     w: 3,
     h: 4,
     minW: 2,
     minH: 2,
+    component: value,
 }));
 
 const createElement = (item: Item, onRemoveItem: () => void) => {
     return (
         <div key={item.i} data-grid={item}>
-            <Card sx={{ bgcolor: 'lightgray', border: '1px solid black', width: '100%', height: '100%' }}>
+            <Card 
+                sx={{
+                    bgcolor: 'lightgray',
+                    border: '1px solid black',
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
                 <CardHeader
                     action={
                         <IconButton aria-label="settings">
                             <MoreVertIcon />
                         </IconButton>
                     }
-                    title="Chart Title"
-                    subheader="chart description"
+                    title={item.component.title}
+                    subheader={item.component.description}
                 />
-                <CardContent>
+                <CardContent sx={{ flex: 1 }}>
                     {item.i === '1'
                         ? <TimeseriesChart />
                         : <span className="text">{item.i}</span>

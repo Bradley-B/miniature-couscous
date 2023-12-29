@@ -25,22 +25,24 @@ const TimeseriesChart = () => {
         return () => clearInterval(intervalId);
     }, []);
 
-    return <LineChart
-        height={300}
-        series={[
-            { data, label: 'data' },
-            // { data: uData, label: 'uv' },
-        ]}
-        xAxis={[{ scaleType: 'time', data: lables }]}
-        slotProps={{
-            legend: {
-              direction: 'column',
-              position: { vertical: 'middle', horizontal: 'right' },
-              padding: -10,
-            },
-          }}
-        sx={{ pl: 1, pr: 2 }}
-    />
+    return <>
+        <LineChart
+            // height={300}
+            series={[
+                { data, label: 'data' },
+                // { data: uData, label: 'uv' },
+            ]}
+            xAxis={[{ scaleType: 'time', data: lables }]}
+            slotProps={{
+                legend: {
+                    direction: 'column',
+                    position: { vertical: 'middle', horizontal: 'right' },
+                    padding: -10,
+                },
+            }}
+            sx={{ pl: 1, pr: 2 }}
+        />
+    </>
 };
 
 export default TimeseriesChart;
