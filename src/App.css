@@ -37,10 +37,19 @@
   }
 }
 
-.react-grid-item {
+
+.MuiCardHeader-title {
+  text-align: left;
+}
+
+.MuiCardHeader-subheader {
+  text-align: left;
+}
+
+/* .react-grid-item {
   background-color: lightgray;
   border: 1px solid black;
-}
+} */
 
 /* .react-draggable-transparent-selection {
   user-select: none;

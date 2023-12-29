@@ -1,8 +1,9 @@
 import { LineChart } from "@mui/x-charts";
 import { useEffect, useState } from "react";
 
+const dataInterval = 15000;
 const initialData = [4000, 3000, 2000, 2780, 1890, 2390, 3490, 4000, 3000, 2000, 2780, 1890, 2390, 3490];
-const initialLabels = [...Array(14).keys()].map(key => new Date(Date.now() + key * 1000));
+const initialLabels = [...Array(14).keys()].map(key => new Date(Date.now() - key * dataInterval)).reverse();
 
 // const pData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
 
@@ -16,12 +17,12 @@ const TimeseriesChart = () => {
     const [lables, setLabels] = useState(initialLabels);
 
     useEffect(() => {
-        const interval = setInterval(() => {
+        const intervalId = setInterval(() => {
             setData(currentData => [...currentData.slice(1), randomBetween(1000, 4000)]);
             setLabels(currentLabels => [...currentLabels.slice(1), new Date(Date.now() + currentLabels.length * 1000)]);
-        }, 2000);
+        }, dataInterval);
 
-        return () => clearInterval(interval);
+        return () => clearInterval(intervalId);
     }, []);
 
     return <LineChart

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { WidthProvider, Responsive } from "react-grid-layout";
+import { Card, CardContent, CardActions, CardHeader, IconButton } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TimeseriesChart from "../../components/TimeseriesChart";
 // import _ from "lodash";
 
@@ -15,23 +17,43 @@ type Item = {
     y: number,
     w: number,
     h: number,
+    minW?: number,
+    minH?: number,
 }
 
 const defaultItems: Item[] = [0, 1, 2, 3, 4].map((value, index, array) => ({
     i: value.toString(),
-    x: value * 2,
+    x: value * 3,
     y: 0,
-    w: 2,
-    h: 2,
+    w: 3,
+    h: 4,
+    minW: 2,
+    minH: 2,
 }));
 
 const createElement = (item: Item, onRemoveItem: () => void) => {
     return (
         <div key={item.i} data-grid={item}>
-            { item.i === '1'
-                ? <TimeseriesChart />
-                : <span className="text">{item.i}</span>
-            }
+            <Card sx={{ bgcolor: 'lightgray', border: '1px solid black', width: '100%', height: '100%' }}>
+                <CardHeader
+                    action={
+                        <IconButton aria-label="settings">
+                            <MoreVertIcon />
+                        </IconButton>
+                    }
+                    title="Chart Title"
+                    subheader="chart description"
+                />
+                <CardContent>
+                    {item.i === '1'
+                        ? <TimeseriesChart />
+                        : <span className="text">{item.i}</span>
+                    }
+                </CardContent>
+                <CardActions>
+                    {/* <Button size="small">Learn More</Button> */}
+                </CardActions>
+            </Card>
         </div>
     );
 }
@@ -49,6 +71,7 @@ export const Dashboard = (props: Props) => {
         <div>
             <button onClick={onAddItem}>Add Item</button>
             <ResponsiveReactGridLayout
+                rowHeight={100}
                 // onLayoutChange={onLayoutChange}
                 // onBreakpointChange={onBreakpointChange}
             //   {...this.props}
