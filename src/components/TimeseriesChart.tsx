@@ -1,47 +1,102 @@
-import { LineChart } from "@mui/x-charts";
-import { useEffect, useState } from "react";
+import { ResponsiveLine } from "@nivo/line";
+import useRandomData from "../lib/useRandomData";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-const dataInterval = 15000;
-const initialData = [4000, 3000, 2000, 2780, 1890, 2390, 3490, 4000, 3000, 2000, 2780, 1890, 2390, 3490];
-const initialLabels = [...Array(14).keys()].map(key => new Date(Date.now() - key * dataInterval)).reverse();
+type Callback<T extends (...args: Parameters<T>) => ReturnType<T>> = (...args: Parameters<T>) => ReturnType<T>;
 
-// const pData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
+const getThrottled = <T extends Callback<T>>(callback: T, delay: number) => {
+    let isThrottleTimerRunning = false;
+    let debounceTimerId: ReturnType<typeof setTimeout> | undefined;
 
-const randomBetween = (min: number, max: number) => {
-    return Math.floor(Math.random() * (max - min + 1) + min)
-  }
+    return (...args: Parameters<T>) => {
+        if (!isThrottleTimerRunning) {
+            isThrottleTimerRunning = true;
+            callback(...args);
+            setTimeout(() => {
+                isThrottleTimerRunning = false;
+                callback(...args);
+            }, delay);
+        }
+
+        clearTimeout(debounceTimerId);
+        debounceTimerId = setTimeout(() => callback(...args), delay);
+    };
+}
 
 const TimeseriesChart = () => {
 
-    const [data, setData] = useState(initialData);
-    const [lables, setLabels] = useState(initialLabels);
+    const dataset = useRandomData({ n: 15 });
 
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            setData(currentData => [...currentData.slice(1), randomBetween(1000, 4000)]);
-            setLabels(currentLabels => [...currentLabels.slice(1), new Date(Date.now() + currentLabels.length * 1000)]);
-        }, dataInterval);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [size, setSize] = useState({ height: 0, width: 0 });
 
-        return () => clearInterval(intervalId);
+    const throttledSetSize = useMemo(() => {
+        return getThrottled((height: number, width: number) => {
+            setSize({ height, width })
+        }, 100);
     }, []);
 
+    useEffect(() => {
+        const resizeObserver = new ResizeObserver(observerEntries => {
+            if (observerEntries.length !== 1) return;
+            if (observerEntries[0].contentBoxSize.length !== 1) return;
+
+            const height = observerEntries[0].contentBoxSize[0].blockSize;
+            const width = observerEntries[0].contentBoxSize[0].inlineSize;
+
+            throttledSetSize(height, width);
+        });
+
+        if (containerRef.current) {
+            resizeObserver.observe(containerRef.current);
+        }
+
+        return () => resizeObserver.disconnect();
+    }, [throttledSetSize]);
+
     return <>
-        <LineChart
-            // height={300}
-            series={[
-                { data, label: 'data' },
-                // { data: uData, label: 'uv' },
-            ]}
-            xAxis={[{ scaleType: 'time', data: lables }]}
-            slotProps={{
-                legend: {
-                    direction: 'column',
-                    position: { vertical: 'middle', horizontal: 'right' },
-                    padding: -10,
-                },
-            }}
-            sx={{ pl: 1, pr: 2 }}
-        />
+        <div ref={containerRef} style={{ width: '100%', height: 0, minHeight: '100%' }}>
+            <div style={{ height: size.height, width: size.width }}>
+                <ResponsiveLine
+                    data={[{ id: 'data', data: dataset }]}
+                    xScale={{ type: 'time', format: 'native', useUTC: false }}
+                    yScale={{ type: 'linear' }}
+
+                    margin={{ top: 10, right: 80, bottom: 50, left: 60 }}
+
+                    axisLeft={{
+                        legend: 'random data',
+                        legendPosition: 'middle',
+                        legendOffset: -50,
+                    }}
+                    axisBottom={{
+                        tickValues: 'every 5 seconds',
+                        tickRotation: 60,
+                        format: (value: Date) => {
+                            const isoString = value.toISOString().split('T');
+                            return isoString[1].split('.000Z')[0];
+                        }
+                    }}
+
+                    colors={{ scheme: 'spectral' }}
+                    isInteractive={true}
+                    animate={false}
+
+                    pointSize={10}
+                    pointColor="white"
+                    pointBorderWidth={2}
+                    pointBorderColor={{ from: 'serieColor' }}
+
+                    legends={[{
+                        anchor: 'right',
+                        direction: 'column',
+                        translateX: 100,
+                        itemWidth: 80,
+                        itemHeight: 20,
+                    }]}
+                />
+            </div>
+        </div>
     </>
 };
 

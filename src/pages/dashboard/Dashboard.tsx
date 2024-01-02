@@ -4,6 +4,7 @@ import { Card, CardContent, CardActions, CardHeader, IconButton } from '@mui/mat
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TimeseriesChart from "../../components/TimeseriesChart";
 import { DashboardComponent, dashboards } from "../../data/dashboards";
+import GaugeChart from "../../components/GaugeChart";
 // import _ from "lodash";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
