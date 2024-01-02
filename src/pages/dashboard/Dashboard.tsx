@@ -29,13 +29,15 @@ const defaultItems: Item[] = dashboards[0].components.map((value, index, array) 
     x: value.id * 3,
     y: 0,
     w: 3,
-    h: 4,
-    minW: 2,
-    minH: 2,
+    h: 3,
+    minW: 3,
+    minH: 3,
     component: value,
 }));
 
-const createElement = (item: Item, onRemoveItem: () => void) => {
+const createElement = (item: Item, onRemoveItem: () => void, columns: number = 12) => {
+    item.x = item.x % columns;
+
     return (
         <div key={item.i} data-grid={item}>
             <Card 
@@ -58,10 +60,7 @@ const createElement = (item: Item, onRemoveItem: () => void) => {
                     subheader={item.component.description}
                 />
                 <CardContent sx={{ flex: 1 }}>
-                    {item.i === '1'
-                        ? <TimeseriesChart />
-                        : <span className="text">{item.i}</span>
-                    }
+                    <TimeseriesChart />
                 </CardContent>
                 <CardActions>
                     {/* <Button size="small">Learn More</Button> */}
@@ -74,24 +73,28 @@ const createElement = (item: Item, onRemoveItem: () => void) => {
 export const Dashboard = (props: Props) => {
     const [newCounter, setNewCounter] = useState(0);
     const [items, setItems] = useState<Item[]>(defaultItems);
+    const [columns, setColumns] = useState<number>();
 
     const onAddItem = () => { };
     const onRemoveItem = () => { };
     const onLayoutChange = () => { };
-    const onBreakpointChange = () => { };
+
+    const onBreakpointChange = (newBreakpoint: string, newCols: number) => {
+        setColumns(newCols);
+    };
 
     return (
-        <div>
+        <>
             <button onClick={onAddItem}>Add Item</button>
             <ResponsiveReactGridLayout
                 rowHeight={100}
                 // onLayoutChange={onLayoutChange}
-                // onBreakpointChange={onBreakpointChange}
+                onBreakpointChange={onBreakpointChange}
             //   {...this.props}
             >
-                {items.map(i => createElement(i, onRemoveItem))}
+                {items.map(i => createElement(i, onRemoveItem, columns))}
             </ResponsiveReactGridLayout>
-        </div>
+        </>
     );
 }
 

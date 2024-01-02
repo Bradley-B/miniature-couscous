@@ -20,27 +20,27 @@ export const dashboards: Dashboard[] = [{
     }, {
         id: 1,
         title: 'Chrono-Chaos Coeffifient',
-        description: "Adeptness at managing time-related pandemonium and maintaining order in the temporal realm",
+        description: "Detected time-offset coefficient to adjust from cosmic background radiation ",
     }, {
         id: 2,
         title: 'Time Warp Resilience Rating',
-        description: "Resilience in withstanding and correcting time warps"
+        description: "Source's stability in correcting both short-term and long-term effects of time warps"
     }, {
         id: 3,
         title: 'Leap Second Limbo Level',
-        description: "Reported ability to gracefully navigate the time between leap seconds"
+        description: "Reported ability to navigate the time between leap seconds"
     }, {
         id: 4,
         title: 'Jitter Juggernaut Index',
-        description: "Prowess in juggling and taming the unruly forces of jitter"
+        description: "Current index of the Jitter Juggernaut subsystem"
     }, {
         id: 5,
         title: 'Gravitational Groove Guardian',
-        description: "Ability to grind a groove through the gnarly gravitational waves"
+        description: "Ability to discipline the oscillator after correcting for the forces of gravitational waves"
     }, {
         id: 6,
         title: 'Satellite Semaphore Sync',
-        description: "Proficiency in semaphore signaling with satellites"
+        description: "Current status of GNSS satellite semaphore signaling"
     }],
 }, {
     id: 1,

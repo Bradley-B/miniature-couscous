@@ -6,11 +6,23 @@ import '../node_modules/react-grid-layout/css/styles.css';
 import '../node_modules/react-resizable/css/styles.css';
 
 import Home from './pages/home/Home';
+import { createTheme } from '@mui/material';
+import { ThemeProvider } from '@emotion/react';
+
+const theme = createTheme({
+  typography: {
+    h5: {
+      fontSize: '1.1rem',
+    },
+  },
+});
 
 function App() {
   return (
     <div className="App">
-      <Home />
+      <ThemeProvider theme={theme}>
+        <Home />
+      </ThemeProvider>
       {/* <Dashboard /> */}
       {/* <ShowcaseLayout /> */}
       {/* <header className="App-header">
