@@ -1,62 +1,18 @@
 import { ResponsiveLine } from "@nivo/line";
 import useRandomData from "../lib/useRandomData";
-import { useEffect, useMemo, useRef, useState } from "react";
-
-type Callback<T extends (...args: Parameters<T>) => ReturnType<T>> = (...args: Parameters<T>) => ReturnType<T>;
-
-const getThrottled = <T extends Callback<T>>(callback: T, delay: number) => {
-    let isThrottleTimerRunning = false;
-    let debounceTimerId: ReturnType<typeof setTimeout> | undefined;
-
-    return (...args: Parameters<T>) => {
-        if (!isThrottleTimerRunning) {
-            isThrottleTimerRunning = true;
-            callback(...args);
-            setTimeout(() => {
-                isThrottleTimerRunning = false;
-                callback(...args);
-            }, delay);
-        }
-
-        clearTimeout(debounceTimerId);
-        debounceTimerId = setTimeout(() => callback(...args), delay);
-    };
-}
+import { useRef } from "react";
+import { useElementSize } from "../lib/useElementSize";
 
 const TimeseriesChart = () => {
 
     const dataset = useRandomData({ n: 15 });
 
     const containerRef = useRef<HTMLDivElement>(null);
-    const [size, setSize] = useState({ height: 0, width: 0 });
-
-    const throttledSetSize = useMemo(() => {
-        return getThrottled((height: number, width: number) => {
-            setSize({ height, width })
-        }, 100);
-    }, []);
-
-    useEffect(() => {
-        const resizeObserver = new ResizeObserver(observerEntries => {
-            if (observerEntries.length !== 1) return;
-            if (observerEntries[0].contentBoxSize.length !== 1) return;
-
-            const height = observerEntries[0].contentBoxSize[0].blockSize;
-            const width = observerEntries[0].contentBoxSize[0].inlineSize;
-
-            throttledSetSize(height, width);
-        });
-
-        if (containerRef.current) {
-            resizeObserver.observe(containerRef.current);
-        }
-
-        return () => resizeObserver.disconnect();
-    }, [throttledSetSize]);
+    const size = useElementSize(containerRef);
 
     return <>
         <div ref={containerRef} style={{ width: '100%', height: 0, minHeight: '100%' }}>
-            <div style={{ height: size.height, width: size.width }}>
+            <div style={{ height: size?.height, width: size?.width }}>
                 <ResponsiveLine
                     data={[{ id: 'data', data: dataset }]}
                     xScale={{ type: 'time', format: 'native', useUTC: false }}
