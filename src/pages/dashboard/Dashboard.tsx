@@ -96,8 +96,6 @@ export const Dashboard = (props: Props) => {
         setColumns(newCols);
     };
 
-    console.log(shouldUseUplotCharts);
-
     return (
         <>
             <FormControlLabel

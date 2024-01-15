@@ -1,14 +1,14 @@
 import { RefObject, useEffect, useMemo, useState } from "react";
 import { getThrottled } from "./getThrottled";
 
-export const useElementSize = (elementRef: RefObject<Element>) => {
+export const useElementSize = (elementRef: RefObject<Element>, delay = 200) => {
     const [size, setSize] = useState<{ height: number, width: number }>();
 
     const throttledSetSize = useMemo(() => {
         return getThrottled((height: number, width: number) => {
             setSize({ height, width });
-        }, 200);
-    }, []);
+        }, delay);
+    }, [delay]);
 
     useEffect(() => {
         const resizeObserver = new ResizeObserver(observerEntries => {

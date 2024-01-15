@@ -15,7 +15,7 @@ const UPlotTimeseriesChart = () => {
     }, [dataset]);
 
     const containerRef = useRef<HTMLDivElement>(null);
-    const size = useElementSize(containerRef);
+    const size = useElementSize(containerRef, 10);
 
     const uPlotRef = useRef<HTMLDivElement>(null);
     const [uPlotInstance, setUPlotInstance] = useState<uPlot>();
