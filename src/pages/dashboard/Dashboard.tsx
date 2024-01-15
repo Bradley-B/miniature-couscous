@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { WidthProvider, Responsive } from "react-grid-layout";
-import { Card, CardContent, CardActions, CardHeader, IconButton } from '@mui/material';
+import { Card, CardContent, CardActions, CardHeader, IconButton, Checkbox, FormControlLabel } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import TimeseriesChart from "../../components/TimeseriesChart";
 import { DashboardComponent, dashboards } from "../../data/dashboards";
-import GaugeChart from "../../components/GaugeChart";
-// import _ from "lodash";
+import NivoTimeseriesChart from "../../components/NivoTimeseriesChart";
+import UPlotTimeseriesChart from "../../components/UPlotTimeseriesChart";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -35,7 +34,7 @@ const defaultItems: Item[] = dashboards[0].components.map((value, index, array) 
     component: value,
 }));
 
-const createElement = (item: Item, onRemoveItem: () => void, columns: number = 12) => {
+const createElement = (item: Item, onRemoveItem: () => void, columns: number = 12, uplot: boolean) => {
     item.x = item.x % columns;
 
     return (
@@ -60,7 +59,7 @@ const createElement = (item: Item, onRemoveItem: () => void, columns: number = 1
                     subheader={item.component.description}
                 />
                 <CardContent sx={{ flex: 1 }}>
-                    <TimeseriesChart />
+                    { uplot ? <UPlotTimeseriesChart /> : <NivoTimeseriesChart /> }
                 </CardContent>
                 <CardActions>
                     {/* <Button size="small">Learn More</Button> */}
@@ -75,6 +74,9 @@ export const Dashboard = (props: Props) => {
     const [items, setItems] = useState<Item[]>(defaultItems);
     const [columns, setColumns] = useState<number>();
 
+    const defaultUplot = true;
+    const [shouldUseUplotCharts, setShouldUseUplotCharts] = useState(defaultUplot);
+
     const onAddItem = () => { };
     const onRemoveItem = () => { };
     const onLayoutChange = () => { };
@@ -83,16 +85,25 @@ export const Dashboard = (props: Props) => {
         setColumns(newCols);
     };
 
+    console.log(shouldUseUplotCharts);
+
     return (
         <>
-            <button onClick={onAddItem}>Add Item</button>
+            <FormControlLabel
+                label="use uplot charts"
+                control={<Checkbox
+                    defaultChecked={defaultUplot}
+                    onChange={(_, value) => setShouldUseUplotCharts(value)}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                />}
+            />
             <ResponsiveReactGridLayout
                 rowHeight={100}
                 // onLayoutChange={onLayoutChange}
                 onBreakpointChange={onBreakpointChange}
             //   {...this.props}
             >
-                {items.map(i => createElement(i, onRemoveItem, columns))}
+                {items.map(i => createElement(i, onRemoveItem, columns, shouldUseUplotCharts))}
             </ResponsiveReactGridLayout>
         </>
     );

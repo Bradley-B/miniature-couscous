@@ -3,7 +3,7 @@ import useRandomData from "../lib/useRandomData";
 import { useRef } from "react";
 import { useElementSize } from "../lib/useElementSize";
 
-const TimeseriesChart = () => {
+const NivoTimeseriesChart = () => {
 
     const dataset = useRandomData({ n: 15 });
 
@@ -56,4 +56,4 @@ const TimeseriesChart = () => {
     </>
 };
 
-export default TimeseriesChart;
+export default NivoTimeseriesChart;
