@@ -6,7 +6,7 @@ import '../../node_modules/uplot/dist/uPlot.min.css';
 
 const UPlotTimeseriesChart = () => {
 
-    const dataset = useRandomData({ n: 15, interval: 5000 });
+    const dataset = useRandomData({ n: 20, interval: 2000 });
 
     const data: AlignedData = useMemo(() => {
         const x = dataset.map(p => p.x.valueOf() / 1000);

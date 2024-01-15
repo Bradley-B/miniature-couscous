@@ -5,6 +5,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { DashboardComponent, dashboards } from "../../data/dashboards";
 import NivoTimeseriesChart from "../../components/NivoTimeseriesChart";
 import UPlotTimeseriesChart from "../../components/UPlotTimeseriesChart";
+import DataCard from "../../components/DataCard";
+import { shuffle } from "../../lib/shuffle";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -23,19 +25,28 @@ type Item = {
     component: DashboardComponent,
 }
 
-const defaultItems: Item[] = dashboards[0].components.map((value, index, array) => ({
+const defaultItems: Item[] = shuffle(dashboards[0].components).map((value, index, array) => ({
     i: value.id.toString(),
-    x: value.id * 3,
+    x: index * 3,
     y: 0,
-    w: 3,
-    h: 3,
-    minW: 3,
-    minH: 3,
+    w: value.type === 'timeseries' ? 3 : 2,
+    h: value.type === 'timeseries' ? 3 : 2,
+    minW: value.type === 'timeseries' ? 3 : 2,
+    minH: value.type === 'timeseries' ? 3 : 2,
     component: value,
 }));
 
 const createElement = (item: Item, onRemoveItem: () => void, columns: number = 12, uplot: boolean) => {
     item.x = item.x % columns;
+
+    const renderChart = () => {
+        if (item.component.type === 'data-card') return <DataCard />;
+        if (item.component.type === 'timeseries') {
+            if (uplot) return <UPlotTimeseriesChart />
+            return <NivoTimeseriesChart />
+        }
+        return null;
+    }
 
     return (
         <div key={item.i} data-grid={item}>
@@ -59,7 +70,7 @@ const createElement = (item: Item, onRemoveItem: () => void, columns: number = 1
                     subheader={item.component.description}
                 />
                 <CardContent sx={{ flex: 1 }}>
-                    { uplot ? <UPlotTimeseriesChart /> : <NivoTimeseriesChart /> }
+                    { renderChart() }
                 </CardContent>
                 <CardActions>
                     {/* <Button size="small">Learn More</Button> */}
